@@ -1,3 +1,20 @@
+Given that the CSV data is embedded directly into the `main.js` file, there are a few potential reasons why the visualization might not be working on your GitHub Pages site:
+
+1. **JavaScript Errors**:
+   - There might be JavaScript errors in the console that are preventing the code from running. Check the browser's console for any errors.
+
+2. **Dependencies**:
+   - Ensure that all dependencies (e.g., React, Recharts) are correctly included and loaded in your project.
+
+3. **GitHub Pages Configuration**:
+   - Ensure that your GitHub Pages site is correctly configured and the latest version of your code is deployed.
+
+4. **CSS and Styling**:
+   - Verify that all CSS and styling are correctly applied and loaded.
+
+Here is the `main.js` file with the embedded data:
+
+```javascript
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -6,13 +23,13 @@ const CytokineDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [logarithmic, setLogarithmic] = useState(false);
-  
+
   // HC colors in blue shades
   const hcColors = ['#003f5c', '#2f4b7c', '#665191', '#a05195'];
-  
+
   // AD/MCI colors in orange/red shades
   const adColors = ['#f95d6a', '#ff7c43', '#ffa600', '#ff4500'];
-  
+
   // Full list of all cytokines in the dataset
   const allCytokines = [
     "IL-6 (57)", "TNFa (75)", "IL-10 (27)", "IL-1B (46)", "MCP-1 (67)",
@@ -22,9 +39,9 @@ const CytokineDashboard = () => {
     "IP-10 (65)", "GM-CSF (20)", "IL-17A (39)", "MCP-2 (13)", "Eotaxin (12)",
     "sCD40L (38)"
   ];
-  
+
   // Complete preprocessed data from the CSV
-  // Format: { cytokine: [{ timepoint, HC, AD/MCI }, ...]}
+  // Format: { cytokine: [{ timepoint, HC, 'AD/MCI' }, ...]}
   const completeData = {
     // Pro-inflammatory cytokines
     "IL-6 (57)": [
@@ -63,7 +80,6 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr3', HC: 3.2225, 'AD/MCI': 0 },
       { timepoint: 'Hr5', HC: 1.495, 'AD/MCI': 0 }
     ],
-    
     // Anti-inflammatory cytokines
     "IL-10 (27)": [
       { timepoint: 'Hr0', HC: 1.315, 'AD/MCI': 4.0767 },
@@ -77,7 +93,6 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr3', HC: 37.328, 'AD/MCI': 9.12 },
       { timepoint: 'Hr5', HC: 19.06, 'AD/MCI': 9.24 }
     ],
-    
     // Chemokines
     "MCP-1 (67)": [
       { timepoint: 'Hr0', HC: 243.595, 'AD/MCI': 222.477 },
@@ -103,7 +118,6 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr3', HC: 12.705, 'AD/MCI': 0 },
       { timepoint: 'Hr5', HC: 6.28, 'AD/MCI': 0 }
     ],
-    
     // Growth Factors
     "EGF (12)": [
       { timepoint: 'Hr0', HC: 1.13, 'AD/MCI': 0 },
@@ -123,7 +137,6 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr3', HC: 9872.7425, 'AD/MCI': 6489.47333 },
       { timepoint: 'Hr5', HC: 8660.695, 'AD/MCI': 6337.465 }
     ],
-    
     // T Cell Related
     "IL-7 (61)": [
       { timepoint: 'Hr0', HC: 1.935, 'AD/MCI': 0.1333 },
@@ -137,7 +150,6 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr3', HC: 3.205, 'AD/MCI': 0 },
       { timepoint: 'Hr5', HC: 1.495, 'AD/MCI': 0 }
     ],
-    
     // Additional Cytokines
     "IL-18 (66)": [
       { timepoint: 'Hr0', HC: 34.705, 'AD/MCI': 41.4467 },
@@ -188,7 +200,7 @@ const CytokineDashboard = () => {
       { timepoint: 'Hr5', HC: 1933.7275, 'AD/MCI': 1151.705 }
     ]
   };
-  
+
   // Define functional groups
   const functionalGroups = {
     "Growth Factors": [
@@ -212,7 +224,7 @@ const CytokineDashboard = () => {
       "sCD40L (38)"
     ]
   };
-  
+
   // Get cytokines for the selected functional category, filtered by search term
   const getFilteredCytokines = () => {
     let filteredList = [];
@@ -234,239 +246,6 @@ const CytokineDashboard = () => {
     
     return filteredList;
   };
-  
-  // Handle cytokine selection
-  const handleCytokineSelect = (cytokine) => {
-    setSelectedCytokine(cytokine);
-  };
-  
-  // Get shortened name for display
-  const getShortCytokineName = (fullName) => {
-    // Extract the cytokine name without the number in parentheses
-    const match = fullName.match(/^([^(]+)/);
-    return match ? match[1].trim() : fullName;
-  };
-  
-  // Get category for a specific cytokine
-  const getCytokineCategory = (cytokine) => {
-    for (const [category, cytokineList] of Object.entries(functionalGroups)) {
-      if (cytokineList.includes(cytokine)) {
-        return category;
-      }
-    }
-    return "Uncategorized";
-  };
-  
-  // Custom tooltip for the bar chart
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-4 border border-gray-200 shadow-md rounded text-sm">
-          <p className="font-bold text-base">{`Timepoint: ${label}`}</p>
-          {payload.map((entry, index) => (
-            <p key={`item-${index}`} style={{ color: entry.color }}>
-              {`${entry.name}: ${entry.value !== null ? entry.value.toFixed(2) : 'N/A'} pg/mL`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-  
-  // Calculate statistics safely with null-checking
-  const calculateHCAverage = (data) => {
-    const validData = data.filter(item => item.HC !== null && item.HC !== undefined);
-    if (validData.length === 0) return "N/A";
-    return (validData.reduce((sum, item) => sum + item.HC, 0) / validData.length).toFixed(2);
-  };
-  
-  const calculateHCMax = (data) => {
-    const validData = data.filter(item => item.HC !== null && item.HC !== undefined);
-    if (validData.length === 0) return "N/A";
-    return Math.max(...validData.map(item => item.HC)).toFixed(2);
-  };
-  
-  const calculateADMCIAverage = (data) => {
-    const validData = data.filter(item => item['AD/MCI'] !== null && item['AD/MCI'] !== undefined);
-    if (validData.length === 0) return "N/A";
-    return (validData.reduce((sum, item) => sum + item['AD/MCI'], 0) / validData.length).toFixed(2);
-  };
-  
-  const calculateADMCIMax = (data) => {
-    const validData = data.filter(item => item['AD/MCI'] !== null && item['AD/MCI'] !== undefined);
-    if (validData.length === 0) return "N/A";
-    return Math.max(...validData.map(item => item['AD/MCI'])).toFixed(2);
-  };
-  
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Alzheimer's Disease Cytokine Profile Dashboard</h1>
-      
-      <div className="flex flex-wrap gap-4 mb-4">
-        <div>
-          <label className="block mb-2 font-medium">Cytokine Category:</label>
-          <select 
-            className="border rounded p-2"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="All">All Categories</option>
-            {Object.keys(functionalGroups).map(category => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div>
-          <label className="block mb-2 font-medium">Search Cytokine:</label>
-          <input
-            type="text"
-            className="border rounded p-2"
-            placeholder="e.g., IL-6, TNFa..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <div>
-          <label className="block mb-2 font-medium">Y-Axis Scale:</label>
-          <div className="flex items-center">
-            <input 
-              type="checkbox" 
-              id="logarithmic-scale"
-              checked={logarithmic}
-              onChange={() => setLogarithmic(!logarithmic)}
-              className="mr-2"
-            />
-            <label htmlFor="logarithmic-scale">Logarithmic</label>
-          </div>
-        </div>
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Select Cytokine:</h2>
-        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 border rounded">
-          {getFilteredCytokines().map((cytokine) => (
-            <button
-              key={cytokine}
-              className={`px-3 py-2 rounded ${
-                selectedCytokine === cytokine 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-200 hover:bg-gray-300'
-              }`}
-              onClick={() => handleCytokineSelect(cytokine)}
-              title={`Category: ${getCytokineCategory(cytokine)}`}
-            >
-              {getShortCytokineName(cytokine)}
-            </button>
-          ))}
-        </div>
-        
-        {getFilteredCytokines().length === 0 && (
-          <div className="text-yellow-600 p-2 mt-2">
-            No cytokines match your search criteria. Try a different search term or category.
-          </div>
-        )}
-      </div>
-      
-      {selectedCytokine && completeData[selectedCytokine] && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-3">
-            {getShortCytokineName(selectedCytokine)} Levels
-            <span className="text-gray-500 text-sm ml-2">
-              Category: {getCytokineCategory(selectedCytokine)}
-            </span>
-          </h2>
-          
-          <div className="bg-white p-4 rounded shadow-sm border border-gray-200" style={{ height: '500px' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={completeData[selectedCytokine]}
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="timepoint"
-                  label={{ value: 'Time Points', position: 'bottom', offset: 0 }}
-                />
-                <YAxis 
-                  scale={logarithmic ? 'log' : 'auto'}
-                  domain={logarithmic ? ['auto', 'auto'] : [0, 'auto']}
-                  label={{ value: 'Concentration (pg/mL)', angle: -90, position: 'left' }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend verticalAlign="top" />
-                
-                {/* HC bars with blue color */}
-                <Bar dataKey="HC" name="Healthy Control" fill={hcColors[0]} />
-                
-                {/* AD/MCI bars with orange/red color */}
-                <Bar dataKey="AD/MCI" name="AD/MCI" fill={adColors[0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          
-          {/* Additional stats for the selected cytokine */}
-          <div className="mt-2 p-3 bg-gray-50 rounded text-sm">
-            <h3 className="font-medium mb-1">Statistical Summary:</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p>
-                  <span className="font-medium">HC Average:</span> {calculateHCAverage(completeData[selectedCytokine])} pg/mL
-                </p>
-                <p>
-                  <span className="font-medium">HC Max:</span> {calculateHCMax(completeData[selectedCytokine])} pg/mL
-                </p>
-              </div>
-              <div>
-                <p>
-                  <span className="font-medium">AD/MCI Average:</span> {calculateADMCIAverage(completeData[selectedCytokine])} pg/mL
-                </p>
-                <p>
-                  <span className="font-medium">AD/MCI Max:</span> {calculateADMCIMax(completeData[selectedCytokine])} pg/mL
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
-        <h2 className="text-lg font-semibold mb-2">About This Visualization</h2>
-        <p>
-          This dashboard displays cytokine profiles comparing levels between healthy controls (HC) 
-          and Alzheimer's Disease/Mild Cognitive Impairment (AD/MCI) patients across four time points (0, 1, 3, and 5 hours).
-        </p>
-        <p className="mt-2">
-          <strong>Data Source:</strong> ADLPS Serum Raw and SelfNL Analysis dataset with 4 timepoints and multiple cytokines
-          organized into 5 functional categories.
-        </p>
-        <p className="mt-2">
-          <strong>Key Observations:</strong>
-        </p>
-        <ul className="list-disc pl-5 mt-1">
-          <li>Pro-inflammatory cytokines (IL-6, TNFα) show different patterns in HC vs. AD/MCI</li>
-          <li>HC subjects show sharper increases at hours 1-3 followed by decreases at hour 5</li>
-          <li>AD/MCI patients show more gradual or sustained elevations</li>
-          <li>Anti-inflammatory cytokines like IL-10 show strong spikes in HC but not in AD/MCI</li>
-          <li>Chemokines such as MCP-1 remain relatively stable across timepoints in both groups</li>
-        </ul>
-        <p className="mt-2">
-          <strong>Important cytokines in Alzheimer's disease:</strong>
-        </p>
-        <ul className="list-disc pl-5 mt-1">
-          <li><strong>IL-6:</strong> Pro-inflammatory cytokine that may contribute to neuroinflammation</li>
-          <li><strong>TNFα:</strong> Key inflammatory mediator with elevated levels in AD patients</li>
-          <li><strong>IL-10:</strong> Anti-inflammatory cytokine that may have protective effects</li>
-          <li><strong>IL-1β:</strong> Pro-inflammatory cytokine implicated in neurodegeneration</li>
-          <li><strong>MCP-1:</strong> Chemokine involved in microglia activation and recruitment</li>
-        </ul>
-      </div>
-    </div>
-  );
-};
 
-export default CytokineDashboard;
+  // Handle cytokine selection
+  const handleC
