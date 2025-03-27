@@ -3,19 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
     <title>Cytokine Visualization</title>
-    <!-- Ensure to include the necessary CSS for your styling -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles for fallback chart */
+        .chart-container {
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #f5f8fa;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        .bar-chart {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .bar-chart th, .bar-chart td {
+            padding: 8px 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .bar-chart th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .bar-chart tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .bar-value {
+            display: flex;
+            align-items: center;
+            height: 24px;
+        }
+        
+        .bar-hc {
+            background-color: #2f4b7c;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .bar-ad {
+            background-color: #ff7c43;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">Loading visualization...</div>
+    
+    <!-- Error display for debugging -->
+    <div id="error-display" style="display:none; margin: 20px; padding: 15px; background-color: #ffdddd; border: 1px solid #ff0000; border-radius: 5px;">
+        <h3>Visualization Error</h3>
+        <p id="error-message"></p>
+        <p>Check the browser console for more details.</p>
+    </div>
+    
     <!-- Include React and ReactDOM -->
-    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
-    <!-- Include Babel for in-browser JSX transformation -->
-    <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
-    <!-- Include Recharts -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
-    <!-- Link to your main.js file -->
-    <script type="text/babel" src="main.js"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Include Babel -->
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js" crossorigin></script>
+    
+    <!-- Link to fallback JS -->
+    <script type="text/babel" src="fallback.js"></script>
 </body>
 </html>
