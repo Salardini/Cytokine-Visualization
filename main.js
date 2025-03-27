@@ -1,3 +1,5 @@
+<HTML>
+  <Script>
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts';
 import Papa from 'papaparse';
@@ -342,3 +344,5 @@ const CytokineDashboard = () => {
 };
 
 export default CytokineDashboard;
+</Script>
+  </HTML>
