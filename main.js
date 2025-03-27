@@ -1,20 +1,3 @@
-Given that the CSV data is embedded directly into the `main.js` file, there are a few potential reasons why the visualization might not be working on your GitHub Pages site:
-
-1. **JavaScript Errors**:
-   - There might be JavaScript errors in the console that are preventing the code from running. Check the browser's console for any errors.
-
-2. **Dependencies**:
-   - Ensure that all dependencies (e.g., React, Recharts) are correctly included and loaded in your project.
-
-3. **GitHub Pages Configuration**:
-   - Ensure that your GitHub Pages site is correctly configured and the latest version of your code is deployed.
-
-4. **CSS and Styling**:
-   - Verify that all CSS and styling are correctly applied and loaded.
-
-Here is the `main.js` file with the embedded data:
-
-```javascript
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
